@@ -63,17 +63,15 @@ else
     protected override async Task OnInitializedAsync()
     {
         _isProcessing = true;
-        
-        await Task.Delay(2000);
 
-        LoadCategories();
+        await LoadCategories();
         
         _isProcessing = false;
     }
 
-    private void LoadCategories()
+    private async Task LoadCategories()
     {
-        _categories = CategoryRepository.GetAll();
+        _categories = await CategoryRepository.GetAll();
     }
 
 }
