@@ -56,22 +56,24 @@ else
 }
 
 @code {
-    private bool _isProcessing = false;
+    private bool _isProcessing = true;
     private IEnumerable<Category> _categories = new List<Category>();
 
-
-    protected override async Task OnInitializedAsync()
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _isProcessing = true;
-
-        await LoadCategories();
-        
-        _isProcessing = false;
+        if (firstRender)
+        {
+            await LoadCategories();
+            _isProcessing = false;
+            StateHasChanged();
+        }
     }
 
     private async Task LoadCategories()
     {
         _categories = await CategoryRepository.GetAll();
     }
+    
 
 }
