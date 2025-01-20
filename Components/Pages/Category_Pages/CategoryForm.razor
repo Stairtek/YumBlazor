@@ -1,9 +1,64 @@
 @page "/category/create"
 @page "/category/update/{id:int}"
 
-<h3>CategoryUpsert</h3>
+@inject ICategoryRepository CategoryRepository
+
+@if (_isProcessing)
+{
+    <div class="position-absolute w-75 h-75 d-flex flex-column align-items-center bg-white justify-content-center">
+        <img src="images/loading.gif" alt="loading" />
+    </div>
+}
+else
+{
+    <div class="card shadow border-0 mt-4">
+        <div class="card-header bg-black bg-gradient ms-0 py-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h2 class="text-white">@(Id > 0 ? "Update" : "Create")</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-4">
+            <div class="row pb-3">
+                <div class="col text-end">
+                    <NavLink
+                        href="category/create"
+                        class="btn btn-primary">
+                        <i class="bi bi-plus-square"></i> Add New Category
+                    </NavLink>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @code {
     [Parameter]
     public int Id { get; set; }
+    
+    [SupplyParameterFromForm]
+    private Category? Category { get; set; } = new Category();
+    
+    private bool _isProcessing = true;
+    
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadCategory();
+            _isProcessing = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadCategory()
+    {
+        if (Id == 0) return;
+            
+        Category = await CategoryRepository.Get(this.Id);
+    }
+
 }
