@@ -22,10 +22,11 @@ else
         <div class="card-body p-4">
             <div class="row pb-3">
                 <div class="col text-end">
-                    <button
+                    <a
+                        href="category/create"
                         class="btn btn-primary">
                         Add New Category
-                    </button>
+                    </a>
                 </div>
             </div>
             
@@ -44,7 +45,12 @@ else
                             <tr>
                                 <td>@category.Name</td>
                                 <td>
-                                    Buttons here
+                                    <a
+                                        href="category/update/@category.Id"
+                                        class="btn btn-primary">
+                                        Edit
+                                    </a>
+                                    <button class="btn btn-danger">Delete</button>
                                 </td>
                             </tr>
                         }
