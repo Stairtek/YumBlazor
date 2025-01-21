@@ -6,7 +6,7 @@ public class ShoppingCart
 {
     public int Id { get; set; }
     
-    public string UserId { get; set; }
+    public required string UserId { get; set; }
     
     [ForeignKey("UserId")]
     public ApplicationUser User { get; set; }
@@ -17,4 +17,6 @@ public class ShoppingCart
     public Product Product { get; set; }
     
     public int Count { get; set; }
+    
+    public decimal ItemTotal => Product.Price * Count;
 }

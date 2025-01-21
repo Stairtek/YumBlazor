@@ -1,0 +1,51 @@
+<div class="card flex-row w-100">
+    <img 
+        class="card-img-left" 
+        style="width: 120px;"
+        src="@_imageUrl"
+        alt="@CartItem.Product.Name Image">
+    
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="">
+                @CartItem.Product.Name
+            </h4>
+            <h4>
+                @CartItem.Product.Price
+            </h4>
+        </div>
+        <div class="flex-fill">
+            <h4 class="text-danger">
+                @CartItem.ItemTotal.ToString("C")
+            </h4>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-between g-0">
+				<span>
+					<i class="bi bi-dash-circle-fill btn text-secondary"></i>
+				</span>
+                <span class="ml-1 me-1">
+					<b class="lead">@CartItem.Count</b>
+				</span>
+                <span>
+					<i class="bi bi-plus-circle-fill btn text-secondary"></i>
+				</span>
+            </div>
+            <button class="btn btn-danger">Remove</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public required ShoppingCart CartItem { get; set; }
+    
+    private string _imageUrl = "images/default.png";
+    
+    
+    protected override void OnInitialized()
+    {
+        if (!string.IsNullOrEmpty(CartItem.Product.ImageUrl))
+            _imageUrl = CartItem.Product.ImageUrl;
+    }
+}
