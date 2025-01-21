@@ -1,0 +1,78 @@
+﻿@page "/"
+
+@inject IProductRepository ProductRepository
+@inject ICategoryRepository CategoryRepository
+
+<PageTitle>Home</PageTitle>
+
+@if (_isProcessing)
+{
+    <div class="position-absolute w-100 vh-100 d-flex flex-column align-items-center bg-white justify-content-center">
+        <img src="images/loading.gif" alt="loading" />
+    </div>
+}
+else
+{
+    <div class="container-fluid px-0 m-0 full-width">
+        <div class="jumbotron-custom">
+            <div class="m-auto d-flex align-items-center" style="width: 400px; height: 50vh;">
+
+                <div class="d-flex align-items-center" style="width: 100%;">
+                    <input type="text" class="form-control rounded-pill"
+                           placeholder="Search for Food Items!"
+                           style="width: 100%; padding: 20px;">
+                    <span style="position: relative; left: -43px;"><i class="bi bi-search"></i></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="content px-4 m-2">
+            <ul class="nav nav-underline justify-content-center mb-2">
+                <li class="nav-item">
+                    <span class="nav-link" href="#" style="cursor: pointer">All</span>
+                </li>
+                @foreach (var category in _categories)
+                {
+                    <li class="nav-item">
+                        <span class="nav-link" href="#" style="cursor: pointer">@category.Name</span>
+                    </li>
+                }
+            </ul>
+            
+            <div class="row mt-4 mx-1">
+                @foreach (var product in _products)
+                {
+                    <div class="col-12 col-md-6 col-lg-4 pe-3 mb-5">
+                        <_ProductCard
+                            Product="product">
+                        </_ProductCard>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    
+}
+
+@code{
+    private IEnumerable<Product> _products = new List<Product>();
+    private IEnumerable<Category> _categories = new List<Category>();
+    private bool _isProcessing = true;
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadData();
+            _isProcessing = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadData()
+    {
+        _products = await ProductRepository.GetAll();
+        _categories = await CategoryRepository.GetAll();
+    }
+}

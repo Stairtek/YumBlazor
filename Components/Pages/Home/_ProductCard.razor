@@ -1,0 +1,47 @@
+<div class="card">
+    <div class="card-body">
+        <div class="mb-2 row">
+            <div class="col-6 px-3">
+                @if (!string.IsNullOrEmpty(Product.SpecialTag))
+                {
+                    <i class="bi bi-star btn btn-outline-success disabled"> @Product.SpecialTag</i>
+                }
+            </div>
+            <div class="col-6 text-end px-3 text-danger h3">
+                @Product.Price.ToString("C")
+            </div>
+        </div>
+
+        <div class="text-center">
+            <img 
+                class="card-img-top img-thumbnail img-rounded w-50 mt-2" 
+                src="@_imageUrl"
+                alt="@Product.Name Image">
+        </div>
+
+        <h5 class="card-title text-center lead text-success">@Product.Name</h5>
+
+        @if (!string.IsNullOrEmpty(Product.Description))
+        {
+            <p class="card-text mt-2">@((MarkupString)Product.Description)</p>
+        }
+
+        <h4 class="text-center">
+            <i class="bi bi-cart3 btn btn-success text-right px-5 form-control"> Add to cart</i>
+        </h4>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public required Product Product { get; set; }
+    
+    private string _imageUrl = "images/default.png";
+
+
+    protected override void OnInitialized()
+    {
+        if (!string.IsNullOrEmpty(this.Product.ImageUrl))
+            _imageUrl = this.Product.ImageUrl;;
+    }
+}
