@@ -80,23 +80,25 @@ else
                     </div>
 
                     <div class="form-floating mb-3">
-                        <InputFile
-                            id="customFile"
-                            class="form-control"
-                            OnChange="LoadFiles"
-                            accept="image/x-png,image/jpeg">
-                            
-                        </InputFile>
-                        <label for="customFile">Upload Image</label>
-                        
-                        @if (!string.IsNullOrEmpty(Product.ImageUrl))
+                        @if (string.IsNullOrEmpty(Product.ImageUrl))
                         {
-                            <div class="row pt-3">
+                            <InputFile
+                                id="customFile"
+                                class="form-control pb-3"
+                                OnChange="LoadFiles"
+                                accept="image/x-png,image/jpeg">
+
+                            </InputFile>
+                            <label for="customFile">Upload Image</label>
+                        }
+                        else
+                        {
+                            <div class="row">
                                 <div class="col-3">
-                                    <img src="@Product.ImageUrl" alt="product image" class="img-thumbnail" />  
+                                    <img src="@Product.ImageUrl" alt="product image" class="img-thumbnail"/>
                                 </div>
                                 <div class="col-9">
-                                    <button 
+                                    <button
                                         class="btn btn-outline-danger"
                                         @onclick="DeleteImage">
                                         <i class="bi bi-trash"></i> Remove Image
