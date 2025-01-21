@@ -54,6 +54,16 @@ else
                     </div>
 
                     <div class="form-floating mb-3">
+                        <InputText
+                            id="ProductSpecialTag"
+                            @bind-Value="Product.SpecialTag"
+                            class="form-control"
+                            placeholder="Enter a Product Special Tag.."/>
+                        <label for="ProductSpecialTag">Special Tag</label>
+                        <ValidationMessage For="@(() => Product.SpecialTag)" />
+                    </div>
+
+                    <div class="form-floating mb-3">
                         <InputNumber
                             id="ProductPrice"
                             @bind-Value="Product.Price"
@@ -99,6 +109,7 @@ else
                                 </div>
                                 <div class="col-9">
                                     <button
+                                        type="button"
                                         class="btn btn-outline-danger"
                                         @onclick="DeleteImage">
                                         <i class="bi bi-trash"></i> Remove Image
@@ -219,6 +230,12 @@ else
     {
         if (string.IsNullOrEmpty(Product.ImageUrl) || string.IsNullOrEmpty(_directoryPath))
             return;
+
+        if (Product.Id != 0)
+        {
+            Product.ImageUrl = null;
+            return;
+        }
         
         var fileToDelete = Product.ImageUrl.Split('/').Reverse().First();
         var filePath = Path.Combine(_directoryPath, fileToDelete);

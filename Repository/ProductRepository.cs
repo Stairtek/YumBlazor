@@ -4,7 +4,9 @@ using YumBlazor.Repository.IRepository;
 
 namespace YumBlazor.Repository;
 
-public class ProductRepository(ApplicationDbContext context) 
+public class ProductRepository(
+    ApplicationDbContext context,
+    IWebHostEnvironment webHostEnvironment) 
     : IProductRepository
 {
     public async Task<Product> Create(Product product)
@@ -23,6 +25,9 @@ public class ProductRepository(ApplicationDbContext context)
         if (productFromDb is null) 
             return product;
         
+        if (product.ImageUrl == null && productFromDb.ImageUrl != null)
+            DeleteImage(productFromDb.ImageUrl);
+        
         productFromDb.Name = product.Name;
         productFromDb.Price = product.Price;
         productFromDb.Description = product.Description;
@@ -31,9 +36,16 @@ public class ProductRepository(ApplicationDbContext context)
 
         context.Products.Update(productFromDb);
         await context.SaveChangesAsync();
-            
+        
         return productFromDb;
-
+    }
+    
+    private void DeleteImage(string imageUrl)
+    {
+        var imagePath = Path.Combine(webHostEnvironment.WebRootPath, imageUrl.TrimStart('/'));
+        
+        if (File.Exists(imagePath))
+            File.Delete(imagePath);
     }
 
     public async Task<bool> Delete(int id)
@@ -43,15 +55,21 @@ public class ProductRepository(ApplicationDbContext context)
 
         if (productFromDb == null) 
             return false;
+
+        if (!string.IsNullOrEmpty(productFromDb.ImageUrl))
+        {
+            DeleteImage(productFromDb.ImageUrl);
+            productFromDb.ImageUrl = null;
+        }
         
         context.Products.Remove(productFromDb);
         return await context.SaveChangesAsync() > 0;
-
     }
 
     public async Task<Product?> Get(int id)
     {
         var productFromDb = await context.Products
+            .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == id);
         
         return productFromDb ?? null;
@@ -59,6 +77,8 @@ public class ProductRepository(ApplicationDbContext context)
 
     public async Task<IEnumerable<Product>> GetAll()
     {
-        return await context.Products.ToListAsync();
+        return await context.Products
+            .Include(c => c.Category)
+            .ToListAsync();
     }
 }
