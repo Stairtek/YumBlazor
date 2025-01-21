@@ -1,3 +1,9 @@
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@inject IShoppingCartRepository ShoppingCartRepository
+
 <div class="card">
     <div class="card-body">
         <div class="mb-2 row">
@@ -27,7 +33,12 @@
         }
 
         <h4 class="text-center">
-            <i class="bi bi-cart3 btn btn-success text-right px-5 form-control"> Add to cart</i>
+            <button
+                type="button"
+                class="btn btn-success text-right px-5 form-control"
+                @onclick="AddOrderItem">
+                <i class="bi bi-cart3"> Add to cart</i>
+            </button>
         </h4>
     </div>
 </div>
@@ -44,4 +55,45 @@
         if (!string.IsNullOrEmpty(this.Product.ImageUrl))
             _imageUrl = this.Product.ImageUrl;;
     }
+
+    private async Task AddOrderItem()
+    {
+        var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authenticationState.User;
+        var authenticated = user.Identity is not null && user.Identity.IsAuthenticated;
+
+        if (!authenticated)
+        {
+            NavigationManager.NavigateTo("Account/Login", true);
+            return;
+        }
+        
+        var userId = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            NavigationManager.NavigateTo("Account/Login", true);
+            return;
+        }
+        
+        var result = await ShoppingCartRepository.UpdateCart(userId, this.Product.Id, 1);
+        
+        if (result)
+            await JSRuntime.ToastrSuccess("Item added to cart successfully.");
+        else
+            await JSRuntime.ToastrError("Failed to add item to cart!");
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
