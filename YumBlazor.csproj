@@ -16,7 +16,9 @@
 
   <ItemGroup>
     <Folder Include="ViewModels\" />
-    <Folder Include="wwwroot\images\products\" />
+	<Content Remove="wwwroot\images\products\**" />
+    <Content Include="wwwroot\images\products\**" Watch="false" />
   </ItemGroup>
+
 
 </Project>

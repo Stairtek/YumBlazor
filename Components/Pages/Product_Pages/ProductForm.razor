@@ -1,6 +1,5 @@
 @page "/products/create"
 @page "/products/update/{id:int}"
-@using YumBlazor.Services.Extensions
 
 @inject IProductRepository ProductRepository
 @inject ICategoryRepository CategoryRepository
@@ -89,6 +88,20 @@ else
                             
                         </InputFile>
                         <label for="customFile">Upload Image</label>
+                        
+                        @if (!string.IsNullOrEmpty(Product.ImageUrl))
+                        {
+                            <div class="row pt-3">
+                                <div class="col-3">
+                                    <img src="@Product.ImageUrl" alt="product image" class="img-thumbnail" />  
+                                </div>
+                                <div class="col-9">
+                                    <button class="btn btn-outline-danger">
+                                        <i class="bi bi-trash"></i> Remove Image
+                                    </button>
+                                </div>
+                            </div>
+                        }
                     </div>
                     
                     <div class="row mt-3">
@@ -125,7 +138,6 @@ else
     private IEnumerable<Category> _categories = new List<Category>();
     private bool _isProcessing = true;
     private string? _directoryPath = "";
-    private bool _isImageLoading = false;
 
 
     protected override Task OnInitializedAsync()
@@ -193,6 +205,8 @@ else
         
         await using var fileStream = new FileStream(filePath, FileMode.Create);
         await file.OpenReadStream(file.Size).CopyToAsync(fileStream);
+        
+        Product.ImageUrl = $"/images/products/{newFileName}";
         
         _isProcessing = false;
     }
