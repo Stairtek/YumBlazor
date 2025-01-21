@@ -67,9 +67,12 @@ else
 }
 
 
-<DeleteConfirmationModal
-    OnModalConfirmation="ConfirmDelete">
-</DeleteConfirmationModal>
+<ConfirmationModal
+    OnModalConfirmation="ConfirmDelete"
+    Title="Are you sure you want to delete this category?"
+    ButtonColor="btn-danger"
+    ButtonText="Delete">
+</ConfirmationModal>
 
 
 
@@ -98,7 +101,7 @@ else
     private async Task HandleDelete(int id)
     {
         _deleteCategoryId = id;
-        await JSRuntime.InvokeVoidAsync("ShowDeleteConfirmationModal");
+        await JSRuntime.InvokeVoidAsync("ShowConfirmationModal");
     }
 
     private async Task ConfirmDelete(bool isConfirmed)
@@ -108,7 +111,7 @@ else
         if (isConfirmed && _deleteCategoryId > 0)
         {
             var result = await CategoryRepository.Delete(_deleteCategoryId);
-            await JSRuntime.InvokeVoidAsync("HideDeleteConfirmationModal");
+            await JSRuntime.InvokeVoidAsync("HideConfirmationModal");
             
             if (result)
                 await JSRuntime.ToastrSuccess("Category deleted successfully.");
