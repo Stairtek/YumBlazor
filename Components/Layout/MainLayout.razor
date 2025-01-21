@@ -7,21 +7,13 @@
     </div>
 
     <main>
+        <NavBar></NavBar>
+        
         <div class="top-row px-4">
             <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
         </div>
 
         <article class="content px-4">
-            @* <AuthorizeView> *@
-            @*     ANY authorized user can see this content. *@
-            @* </AuthorizeView> *@
-            @* <AuthorizeView Roles="@StaticDetails.RoleAdmin"> *@
-            @*     ADMIN *@
-            @* </AuthorizeView> *@
-            @* <AuthorizeView Roles="@StaticDetails.RoleCustomer"> *@
-            @*     CUSTOMER *@
-            @* </AuthorizeView> *@
-            
             @Body
         </article>
     </main>
