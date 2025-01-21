@@ -239,12 +239,11 @@ else
         
         var fileToDelete = Product.ImageUrl.Split('/').Reverse().First();
         var filePath = Path.Combine(_directoryPath, fileToDelete);
-        
-        if (!File.Exists(filePath))
-            return;
-        
-        File.Delete(filePath);
+
         Product.ImageUrl = null;
+        
+        if (File.Exists(filePath))
+            File.Delete(filePath);
     }
 
 }

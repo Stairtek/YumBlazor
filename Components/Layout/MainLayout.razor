@@ -16,7 +16,9 @@
             <NavBar></NavBar>   
         }
 
-        @Body
+        <div class="@(_isAdmin ? "m-4" : "")">
+            @Body
+        </div>
     </main>
 </div>
 
@@ -30,6 +32,7 @@
 @code {
 
     private bool _navBarVisible = true;
+    private bool _isAdmin = false;
 
 
     protected override async Task OnInitializedAsync()
@@ -51,7 +54,9 @@
         if (!authenticated)
             _navBarVisible = true;
 
-        return !user.IsInRole(StaticDetails.RoleAdmin);
+        _isAdmin = user.IsInRole(StaticDetails.RoleAdmin);
+        
+        return !_isAdmin;
     }
 
 }
