@@ -3,6 +3,7 @@
 @using YumBlazor.Services.Extensions
 
 @inject IProductRepository ProductRepository
+@inject ICategoryRepository CategoryRepository
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 
@@ -18,7 +19,7 @@ else
         <div class="card-header bg-black bg-gradient ms-0 py-3">
             <div class="row">
                 <div class="col-12 text-center">
-                    <h2 class="text-white">@(Id > 0 ? "Update" : "Create")</h2>
+                    <h2 class="text-white">@(Id > 0 ? "Update" : "Create") Product</h2>
                 </div>
             </div>
         </div>
@@ -40,6 +41,42 @@ else
                             placeholder="Enter a Product Name.."/>
                         <label for="ProductName">Name</label>
                         <ValidationMessage For="@(() => Product.Name)" />
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <InputText
+                            id="ProductDescription"
+                            @bind-Value="Product.Description"
+                            class="form-control"
+                            placeholder="Enter a Product Description.."/>
+                        <label for="ProductDescription">Description</label>
+                        <ValidationMessage For="@(() => Product.Description)" />
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <InputNumber
+                            id="ProductPrice"
+                            @bind-Value="Product.Price"
+                            class="form-control"
+                            placeholder="Enter a Product Price.."/>
+                        <label for="ProductPrice">Price</label>
+                        <ValidationMessage For="@(() => Product.Price)" />
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <InputSelect
+                            id="ProductCategory"
+                            @bind-Value="Product.CategoryId"
+                            class="form-select"
+                            placeholder="Enter a Product Category..">
+                            <option value="0" disabled="disabled" selected="selected">Select a Category...</option>
+                            @foreach (var category in _categories)
+                            {
+                                <option value="@category.Id">@category.Name</option>
+                            }
+                        </InputSelect>
+                        <label for="ProductCategory">Category</label>
+                        <ValidationMessage For="@(() => Product.CategoryId)" />
                     </div>
                     
                     <div class="row mt-3">
@@ -73,6 +110,7 @@ else
     [SupplyParameterFromForm]
     private Product Product { get; set; } = new Product();
     
+    private IEnumerable<Category> _categories = new List<Category>();
     private bool _isProcessing = true;
     
     
@@ -88,6 +126,8 @@ else
 
     private async Task LoadProduct()
     {
+        _categories = await CategoryRepository.GetAll();
+        
         if (Id == 0) return;
             
         var productFromDb = await ProductRepository.Get(this.Id);
