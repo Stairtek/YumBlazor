@@ -33,7 +33,7 @@ else
             <ul class="nav nav-underline justify-content-center mb-2">
                 <li class="nav-item">
                     <span
-                        class="nav-link @(_selectedCategoryId == 0 ? "active" : "")"
+                        class="nav-link @GetActiveTabClass(0)"
                         href="#"
                         style="cursor: pointer"
                         @onclick="() => FilterProducts(0)">
@@ -44,7 +44,7 @@ else
                 {
                     <li class="nav-item">
                         <span
-                            class="nav-link @(_selectedCategoryId == category.Id ? "active" : "")"
+                            class="nav-link @GetActiveTabClass(category.Id)"
                             href="#"
                             style="cursor: pointer"
                             @onclick="() => FilterProducts(category.Id)">
@@ -74,7 +74,7 @@ else
     private IEnumerable<Category> _categories = new List<Category>();
     private IEnumerable<Product> _filteredProducts = new List<Product>();
     private bool _isProcessing = true;
-    private int _selectedCategoryId = 0;
+    private int _selectedCategoryId;
     private string _searchTerm = string.Empty;
 
 
@@ -124,5 +124,10 @@ else
             .Where(p => p.Name.Contains(newSearchTerm, StringComparison.InvariantCultureIgnoreCase))
             .ToList();
         _searchTerm = newSearchTerm;
+    }
+    
+    private string GetActiveTabClass(int categoryId)
+    {
+        return _selectedCategoryId == categoryId ? "active" : "";
     }
 }
