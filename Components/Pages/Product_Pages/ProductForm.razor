@@ -96,7 +96,9 @@ else
                                     <img src="@Product.ImageUrl" alt="product image" class="img-thumbnail" />  
                                 </div>
                                 <div class="col-9">
-                                    <button class="btn btn-outline-danger">
+                                    <button 
+                                        class="btn btn-outline-danger"
+                                        @onclick="DeleteImage">
                                         <i class="bi bi-trash"></i> Remove Image
                                     </button>
                                 </div>
@@ -209,6 +211,21 @@ else
         Product.ImageUrl = $"/images/products/{newFileName}";
         
         _isProcessing = false;
+    }
+
+    private void DeleteImage()
+    {
+        if (string.IsNullOrEmpty(Product.ImageUrl) || string.IsNullOrEmpty(_directoryPath))
+            return;
+        
+        var fileToDelete = Product.ImageUrl.Split('/').Reverse().First();
+        var filePath = Path.Combine(_directoryPath, fileToDelete);
+        
+        if (!File.Exists(filePath))
+            return;
+        
+        File.Delete(filePath);
+        Product.ImageUrl = null;
     }
 
 }
