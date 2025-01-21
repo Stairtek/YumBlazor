@@ -32,12 +32,24 @@ else
         <div class="content px-4 m-2">
             <ul class="nav nav-underline justify-content-center mb-2">
                 <li class="nav-item">
-                    <span class="nav-link" href="#" style="cursor: pointer">All</span>
+                    <span
+                        class="nav-link @(_selectedCategoryId == 0 ? "active" : "")"
+                        href="#"
+                        style="cursor: pointer"
+                        @onclick="() => FilterProducts(0)">
+                        All
+                    </span>
                 </li>
                 @foreach (var category in _categories)
                 {
                     <li class="nav-item">
-                        <span class="nav-link" href="#" style="cursor: pointer">@category.Name</span>
+                        <span
+                            class="nav-link @(_selectedCategoryId == category.Id ? "active" : "")"
+                            href="#"
+                            style="cursor: pointer"
+                            @onclick="() => FilterProducts(category.Id)">
+                            @category.Name
+                        </span>
                     </li>
                 }
             </ul>
@@ -92,7 +104,11 @@ else
             return;
         }
         
-        
+        _filteredProducts = _products
+            .Where(p => p.CategoryId == categoryId)
+            .ToList();
+        _selectedCategoryId = categoryId;
+        _searchTerm = string.Empty;
     }
     
     private void SearchProducts(string newSearchTerm)
