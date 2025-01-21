@@ -1,8 +1,9 @@
-﻿@inherits LayoutComponentBase
+﻿@using YumBlazor.Utilities
+@inherits LayoutComponentBase
 
 <div class="page">
     <div class="sidebar">
-        <NavMenu />
+        <NavMenu/>
     </div>
 
     <main>
@@ -11,6 +12,16 @@
         </div>
 
         <article class="content px-4">
+            @* <AuthorizeView> *@
+            @*     ANY authorized user can see this content. *@
+            @* </AuthorizeView> *@
+            @* <AuthorizeView Roles="@StaticDetails.RoleAdmin"> *@
+            @*     ADMIN *@
+            @* </AuthorizeView> *@
+            @* <AuthorizeView Roles="@StaticDetails.RoleCustomer"> *@
+            @*     CUSTOMER *@
+            @* </AuthorizeView> *@
+            
             @Body
         </article>
     </main>
