@@ -20,7 +20,10 @@ else
                 <div class="d-flex align-items-center" style="width: 100%;">
                     <input type="text" class="form-control rounded-pill"
                            placeholder="Search for Food Items!"
-                           style="width: 100%; padding: 20px;">
+                           style="width: 100%; padding: 20px;"
+                           @bind:event="oninput"
+                           @bind:get="_searchTerm"
+                           @bind:set="SearchProducts">
                     <span style="position: relative; left: -43px;"><i class="bi bi-search"></i></span>
                 </div>
             </div>
@@ -97,6 +100,7 @@ else
         if (string.IsNullOrEmpty(newSearchTerm))
         {
             _filteredProducts = _products;
+            _searchTerm = string.Empty;
             return;
         }
         
