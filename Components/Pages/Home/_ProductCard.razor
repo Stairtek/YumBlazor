@@ -1,4 +1,3 @@
-@using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
@@ -58,30 +57,23 @@
 
     private async Task AddOrderItem()
     {
-        var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authenticationState.User;
-        var authenticated = user.Identity is not null && user.Identity.IsAuthenticated;
-
-        if (!authenticated)
+        var userAuthentication = await AuthenticationStateProvider.GetUserAuthentication();
+        
+        if (!userAuthentication.IsAuthenticated || string.IsNullOrEmpty(userAuthentication.UserId))
         {
             NavigationManager.NavigateTo("Account/Login", true);
             return;
         }
         
-        var userId = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        var result = await ShoppingCartRepository.UpdateCart(userAuthentication.UserId, this.Product.Id, 1);
 
-        if (string.IsNullOrEmpty(userId))
+        if (!result)
         {
-            NavigationManager.NavigateTo("Account/Login", true);
-            return;
-        }
-        
-        var result = await ShoppingCartRepository.UpdateCart(userId, this.Product.Id, 1);
-        
-        if (result)
-            await JSRuntime.ToastrSuccess("Item added to cart successfully.");
-        else
             await JSRuntime.ToastrError("Failed to add item to cart!");
+            return;
+        }
+        
+        await JSRuntime.ToastrSuccess("Item added to cart successfully!");
     }
 
 }

@@ -2,9 +2,6 @@
 
 @inject IProductRepository ProductRepository
 @inject ICategoryRepository CategoryRepository
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@inject IJSRuntime JSRuntime
-@inject NavigationManager NavigationManager
 
 <PageTitle>Home</PageTitle>
 
@@ -133,18 +130,4 @@ else
     {
         return _selectedCategoryId == categoryId ? "active" : "";
     }
-
-    private async Task Test(Product product)
-    {
-        var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authenticationState.User;
-        var authenticated = user.Identity is not null && user.Identity.IsAuthenticated;
-
-        if (!authenticated)
-        {
-            NavigationManager.NavigateTo("Account/Login");
-            return;
-        }
-    }
-
 }
