@@ -55,7 +55,7 @@ else
                                     </a>
                                     <button 
                                         class="btn btn-danger"
-                                        @onclick="HandleDelete">
+                                        @onclick="()=>HandleDelete(category.Id)">
                                         <i class="bi bi-trash3"></i> Delete
                                     </button>
                                 </td>
@@ -96,4 +96,23 @@ else
         JSRuntime.InvokeVoidAsync("ShowConfirmationModal");
     }
 
+    private async Task ConfirmDelete(bool isConfirmed)
+    {
+        _isProcessing = true;
+        
+        if (isConfirmed && _deleteCategoryId > 0)
+        {
+            var result = await CategoryRepository.Delete(_deleteCategoryId);
+            
+            if (result)
+                await JSRuntime.ToastrSuccess("Category deleted successfully.");
+            else
+                await JSRuntime.ToastrError("Failed to delete category.");
+            
+            await LoadCategories();
+        }
+        
+        _deleteCategoryId = 0;
+        _isProcessing = false;
+    }
 }
