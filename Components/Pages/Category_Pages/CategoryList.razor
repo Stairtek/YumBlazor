@@ -3,8 +3,6 @@
 @inject ICategoryRepository CategoryRepository
 @inject IJSRuntime JSRuntime
 
-<ConfirmationModal></ConfirmationModal>
-
 @if (_isProcessing)
 {
     <div class="position-absolute w-75 h-75 d-flex flex-column align-items-center bg-white justify-content-center">
@@ -68,6 +66,13 @@ else
     </div>
 }
 
+
+<DeleteConfirmationModal
+    OnModalConfirmation="ConfirmDelete">
+</DeleteConfirmationModal>
+
+
+
 @code {
     private bool _isProcessing = true;
     private IEnumerable<Category> _categories = new List<Category>();
@@ -90,10 +95,10 @@ else
     }
 
 
-    private void HandleDelete(int id)
+    private async Task HandleDelete(int id)
     {
         _deleteCategoryId = id;
-        JSRuntime.InvokeVoidAsync("ShowConfirmationModal");
+        await JSRuntime.InvokeVoidAsync("ShowDeleteConfirmationModal");
     }
 
     private async Task ConfirmDelete(bool isConfirmed)
@@ -103,6 +108,7 @@ else
         if (isConfirmed && _deleteCategoryId > 0)
         {
             var result = await CategoryRepository.Delete(_deleteCategoryId);
+            await JSRuntime.InvokeVoidAsync("HideDeleteConfirmationModal");
             
             if (result)
                 await JSRuntime.ToastrSuccess("Category deleted successfully.");

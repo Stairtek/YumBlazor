@@ -1,7 +1,7 @@
-function ShowConfirmationModal() {
-    $('#confirmationModal').modal('show');
+function ShowDeleteConfirmationModal() {
+    $('#DeleteConfirmationModal').modal('show');
 }
 
-function HideConfirmationModal() {
-    $('#confirmationModal').modal('hide');
+function HideDeleteConfirmationModal() {
+    $('#DeleteConfirmationModal').modal('hide');
 }
