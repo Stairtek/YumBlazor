@@ -1,8 +1,10 @@
 @page "/categories/create"
 @page "/categories/update/{id:int}"
+@using YumBlazor.Services.Extensions
 
 @inject ICategoryRepository CategoryRepository
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 @if (_isProcessing)
 {
@@ -99,9 +101,15 @@ else
         _isProcessing = true;
 
         if (Category.Id == 0)
+        {
             await CategoryRepository.Create(this.Category);
+            await JSRuntime.ToastrSuccess("Category created successfully.");
+        }
         else
-            await CategoryRepository.Update(Category);
+        {
+            await CategoryRepository.Update(this.Category);
+            await JSRuntime.ToastrSuccess("Category updated successfully.");
+        }
         
         _isProcessing = false;
         NavigationManager.NavigateTo("categories");
