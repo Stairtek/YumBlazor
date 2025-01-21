@@ -6,6 +6,7 @@
 @inject ICategoryRepository CategoryRepository
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
+@inject IWebHostEnvironment WebHostEnvironment
 
 @if (_isProcessing)
 {
@@ -123,11 +124,16 @@ else
     
     private IEnumerable<Category> _categories = new List<Category>();
     private bool _isProcessing = true;
-    private string? _directoryPath;
+    private string? _directoryPath = "";
     private bool _isImageLoading = false;
-    
-    
-    
+
+
+    protected override Task OnInitializedAsync()
+    {
+        _directoryPath = Path.Combine(WebHostEnvironment.WebRootPath, "images", "products");
+        return base.OnInitializedAsync();
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -171,7 +177,24 @@ else
 
     private async Task LoadFiles(InputFileChangeEventArgs arg)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrEmpty(_directoryPath))
+            return;
+        
+        _isProcessing = true;
+        
+        var file = arg.File;
+        var fileInfo = new FileInfo(file.Name);
+        var newFileName = $"{Guid.NewGuid()}.{fileInfo.Extension}";
+        
+        if(!Directory.Exists(_directoryPath))
+            Directory.CreateDirectory(_directoryPath);
+        
+        var filePath = Path.Combine(_directoryPath, newFileName);
+        
+        await using var fileStream = new FileStream(filePath, FileMode.Create);
+        await file.OpenReadStream(file.Size).CopyToAsync(fileStream);
+        
+        _isProcessing = false;
     }
 
 }
