@@ -37,6 +37,9 @@ else
                     <thead>
                         <tr>
                             <th>Name</th>
+                            <th>Price</th>
+                            <th>Special Tag</th>
+                            <th>Category</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -45,6 +48,9 @@ else
                         {
                             <tr>
                                 <td>@product.Name</td>
+                                <td>@product.Price.ToString("C")</td>
+                                <td>@product.SpecialTag</td>
+                                <td>@product.Category?.Name</td>
                                 <td>
                                     <a
                                         href="products/update/@product.Id"
